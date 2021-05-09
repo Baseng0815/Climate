@@ -1,18 +1,18 @@
-#!/bin/env python3
+#!/usr/bin/env python3
+
 import adafruit_dht
-import board
-import mysql.connector;
+import pymongo
+from datetime import datetime
 
-sensor = adafruit_dht.DHT22(board.D4)
+data_pin = 4
+sensor = adafruit_dht.DHT22(data_pin)
 
-humidity = sensor.humidity
+db_client = pymongo.MongoClient('mongodb://localhost:27017/')
+db_collection = db_client.hord.climate
+
 temperature = sensor.temperature
-
-print(f"Using temperature={temperature}*C and humidity={humidity}%")
-db = mysql.connector.connect(host="localhost",user="sike",passwd="you thought")
-cursor = db.cursor()
-sql = "INSERT INTO climate (Date, Temperature, Humidity) VALUES(curtime(), %s, %s)"
-val = (temperature, humidity)
-cursor.execute("USE logging")
-cursor.execute(sql, val)
-db.commit()
+humidity = sensor.humidity
+if humidity is not None and temperature is not None:
+    print(f"Temperature={temperature} humidity={humidity}")
+    db_collection.insert_one({'when': datetime.now().isoformat(),
+                              'temperature': temperature, 'humidity': humidity})
