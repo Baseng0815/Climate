@@ -15,7 +15,7 @@ class ClimateEntry(
 
 interface ClimateRepository : CrudRepository<ClimateEntry, Long> {
     @Query("SELECT DISTINCT ON (DATE(from_when)) * FROM climate", nativeQuery = true)
-    //@Query("SELECT * FROM climate", nativeQuery = true)
     fun getEveryEntryUniqueByDate(): Iterable<ClimateEntry>
-    override fun findAll(): Iterable<ClimateEntry>
+    @Query("SELECT * FROM climate ORDER BY from_when DESC LIMIT 1", nativeQuery = true)
+    fun getLatest(): ClimateEntry
 }

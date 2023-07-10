@@ -13,12 +13,13 @@ import java.util.*
 class ClimateController(private val repository: ClimateRepository) {
     @GetMapping("/")
     fun climate(model: Model): String {
-        val a = TreeMap<LocalDateTime, ClimateEntry>()
-        for (e in repository.getEveryEntryUniqueByDate()) {
-            a[e.from_when] = e;
+        val entries = TreeMap<LocalDateTime, ClimateEntry>()
+        for (entry in repository.getEveryEntryUniqueByDate()) {
+            entries[entry.from_when] = entry;
         }
 
-        model["chartData"] = a;
+        model["chartData"] = entries;
+        model["latest"] = repository.getLatest();
         return "climate";
     }
 }

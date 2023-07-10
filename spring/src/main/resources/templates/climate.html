@@ -24,6 +24,7 @@
 </div>
 <script th:inline="javascript">
         var real_data = /*[[${chartData}]]*/'noValue';
+        var latest = /*[[${latest}]]*/'noValue';
         $(document).ready(function() {
             google.charts.load('current', {
                 packages : [ 'corechart', 'gauge' ]
@@ -33,9 +34,8 @@
         });
 
         function drawGauge() {
-            const last_entry = real_data[Object.keys(real_data)[Object.keys(real_data).length - 1]]
-            const temperature = last_entry['temperature']
-            const humidity = last_entry['humidity']
+            const temperature = latest['temperature']
+            const humidity = latest['humidity']
 
             var options = {
                 min: -20, max: 40,
